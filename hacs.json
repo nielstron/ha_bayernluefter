@@ -1,0 +1,6 @@
+{
+    "name": "Bayernluefter",
+    "content_in_root": false,
+    "domains": ["sensor", "switch"],
+    "render_readme": true
+}

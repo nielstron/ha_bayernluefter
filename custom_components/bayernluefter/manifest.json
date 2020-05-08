@@ -1,0 +1,14 @@
+{
+  "domain": "bayernluefter",
+  "name": "Bayernluefter",
+  "config_flow": false,
+  "documentation": "https://github.com/nielstron/bayernluefter",
+  "requirements": [
+    "bayernluefter==0.0.2"
+  ],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": ["@nielstron"]
+}
