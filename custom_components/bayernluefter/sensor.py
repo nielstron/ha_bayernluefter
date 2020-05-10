@@ -10,7 +10,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 from homeassistant.helpers import aiohttp_client
 
-from pyernluefter import Bayernluefter
+from bayernluefter import Bayernluefter
 
 __version__ = "v0.1"
 _LOGGER = logging.getLogger(__name__)
