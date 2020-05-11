@@ -1,6 +1,6 @@
 """
-Connect to a BL-NET via it's web interface and read and write data
-Switch to control digital outputs
+Connect to a Bayernluefter via it's web interface and read and write data
+Switch to control the power state
 """
 import logging
 import datetime
@@ -80,18 +80,23 @@ class BayernluefterSwitch(SwitchDevice):
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
         await self._bayernluefter.power_on()
-        self._assumed_state = True
+        await self._bayernluefter.update()
+        self._state = self._bayernluefter.raw_converted()["_SystemOn"]
+        """self._assumed_state = True"""
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
         await self._bayernluefter.power_off()
-        self._assumed_state = False
+        await self._bayernluefter.update()
+        self._state = self._bayernluefter.raw_converted()["_SystemOn"]
+        """self._assumed_state = False"""
 
-    async def async_toggle(self, **kwargs):
+    """async def async_toggle(self, **kwargs):
         await self._bayernluefter.power_toggle()
         self._assumed_state = not self._assumed_state
 
     @property
     def assumed_state(self) -> bool:
         return self._assumed_state
+    """
 
