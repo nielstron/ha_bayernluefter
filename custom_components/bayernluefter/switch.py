@@ -24,51 +24,34 @@ DOMAIN = 'bayernluefter'
 
 DEFAULT_NAME = "Bayernluefter"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_RESOURCE): cv.url,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
-
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
-
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Bayernluefter component"""
 
-    session = aiohttp_client.async_get_clientsession(hass)
+    bayernluefter = discovery_info["bayernluefter"]
+    name = DEFAULT_NAME
+    ent = [
+        BayernluefterPowerSwitch(
+            name=f"{name} Power",
+            bayernluefter=bayernluefter
+        ),
+        BayernluefterTimerSwitch(
+            name=f"{name} Timer",
+            bayernluefter=bayernluefter
+        )
+    ]
+    async_add_entities(ent)
 
-    bayernluefter = Bayernluefter(config[CONF_RESOURCE], session)
-    async_add_entities(
-        [
-            BayernluefterSwitch(
-                name=config[CONF_NAME],
-                bayernluefter=bayernluefter
-            )
-        ]
-    )
 
-
-class BayernluefterSwitch(SwitchDevice):
+class BayernluefterPowerSwitch(SwitchDevice):
     """
     Representation of a switch that toggles a digital output of the UVR1611.
     """
 
     def __init__(self, name, bayernluefter: Bayernluefter):
         """Initialize the switch."""
-        self._state = STATE_UNKNOWN
-        self._assumed_state = True
         self._bayernluefter = bayernluefter
-        self._last_updated = None
         self._name = name
-
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    async def async_update(self):
-        """Get the latest data from communication device """
-        # check if new data has arrived
-        await self._bayernluefter.update()
-        self._state = self._bayernluefter.raw_converted()["_SystemOn"]
 
     @property
     def name(self):
@@ -78,25 +61,41 @@ class BayernluefterSwitch(SwitchDevice):
     @property
     def is_on(self):
         """Return true if device is on."""
-        return self._state
+        return self._bayernluefter.raw_converted()["_SystemOn"]
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
         await self._bayernluefter.power_on()
-        await self.async_update()
         """self._assumed_state = True"""
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
         await self._bayernluefter.power_off()
-        await self.async_update()
 
-    """async def async_toggle(self, **kwargs):
+    async def async_toggle(self, **kwargs):
         await self._bayernluefter.power_toggle()
-        self._assumed_state = not self._assumed_state
+
+
+class BayernluefterTimerSwitch(SwitchDevice):
+    """
+    Representation of a switch that toggles a digital output of the UVR1611.
+    """
+
+    def __init__(self, name, bayernluefter: Bayernluefter):
+        """Initialize the switch."""
+        self._bayernluefter = bayernluefter
+        self._name = name
 
     @property
-    def assumed_state(self) -> bool:
-        return self._assumed_state
-    """
+    def name(self):
+        """Return the name of the switch."""
+        return self._name
+
+    @property
+    def is_on(self):
+        """Return true if device is on."""
+        return self._bayernluefter.raw_converted()["_MaxMode"]
+
+    async def async_toggle(self, **kwargs):
+        await self._bayernluefter.timer_toggle()
 

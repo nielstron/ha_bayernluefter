@@ -82,6 +82,7 @@ async def async_setup(hass, config):
     }
     await async_load_platform(hass, 'sensor', DOMAIN, disc_info, config)
     await async_load_platform(hass, 'switch', DOMAIN, disc_info, config)
+    await async_load_platform(hass, 'fan', DOMAIN, disc_info, config)
 
     # Repeat if data fetching fails at first
     async_track_time_interval(hass,
