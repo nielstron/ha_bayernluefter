@@ -8,10 +8,10 @@ Example configuration.yaml
 sensor:
   - platform: bayernluefter
     name: Living Room WRG
-    resource: 192.168.178.5
+    resource: http://192.168.178.5
 
 switch:
   - platform: bayernluefter
     name: Living Room WRG Power
-    resource: 192.168.178.5
+    resource: http://192.168.178.5
 ```

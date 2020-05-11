@@ -31,6 +31,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
+
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Bayernluefter component"""
@@ -61,6 +63,7 @@ class BayernluefterSwitch(SwitchDevice):
         self._last_updated = None
         self._name = name
 
+    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def async_update(self):
         """Get the latest data from communication device """
         # check if new data has arrived
@@ -80,16 +83,13 @@ class BayernluefterSwitch(SwitchDevice):
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
         await self._bayernluefter.power_on()
-        await self._bayernluefter.update()
-        self._state = self._bayernluefter.raw_converted()["_SystemOn"]
+        await self.async_update()
         """self._assumed_state = True"""
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
         await self._bayernluefter.power_off()
-        await self._bayernluefter.update()
-        self._state = self._bayernluefter.raw_converted()["_SystemOn"]
-        """self._assumed_state = False"""
+        await self.async_update()
 
     """async def async_toggle(self, **kwargs):
         await self._bayernluefter.power_toggle()

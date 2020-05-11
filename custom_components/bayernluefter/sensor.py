@@ -64,8 +64,8 @@ class BayernluefterSensor(Entity):
 
         try:
             await self._bayernluefter.update()
-            self._attributes = self._bayernluefter.raw_converted()
-            self._state = self._attributes["SystemMode"].value
+            self._attributes = self._bayernluefter.raw()
+            self._state = self._bayernluefter.raw_converted()["SystemMode"].value
         except ValueError:
             # if an exception is thrown, server does not support bayernluefter
             # and should not be set up
