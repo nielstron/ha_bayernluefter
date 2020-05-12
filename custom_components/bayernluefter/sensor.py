@@ -20,14 +20,14 @@ MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
 DEFAULT_NAME = "Bayernluefter"
 
 TEMP_MEASURES = [
-    "TempIn",
-    "TempOut",
-    "TempFresh"
+    "Temp_In",
+    "Temp_Out",
+    "Temp_Fresh"
 ]
 REL_HUM_MEASURES = [
     "rel_Humidity_In",
     "rel_Humidity_Out",
-    "Efficiency", # technically not humidity but also percent
+    "Efficiency",  # technically not humidity but also percent
 ]
 ABS_HUM_MEASURES = [
     "abs_Humidity_In",
@@ -97,7 +97,7 @@ class BayernluefterSpecialSensor(BayernluefterSensor):
 
     def update(self):
         try:
-            self._state = self._bayernluefter.raw_converted()[self._type].value
+            self._state = self._bayernluefter.raw_converted()[self._type]
         except KeyError:
             self._state = STATE_UNKNOWN
 
@@ -107,6 +107,6 @@ class BayernluefterAbsSensor(BayernluefterSpecialSensor):
     def update(self):
         # convert grams per cubic meter to milligrams per cubic meter
         try:
-            self._state = self._bayernluefter.raw_converted()[self._type].value/1000
+            self._state = self._bayernluefter.raw_converted()[self._type]/1000
         except KeyError:
             self._state = STATE_UNKNOWN
