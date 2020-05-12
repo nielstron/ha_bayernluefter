@@ -17,6 +17,7 @@ from homeassistant.const import (
 from homeassistant.util import Throttle
 from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
 
+_LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Bayernluefter"
 SPEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -24,7 +25,11 @@ SPEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Bayernluefter component"""
 
-    bayernluefter = discovery_info["bayernluefter"]
+    if discovery_info is None:
+        _LOGGER.warning("Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions.")
+        return False
+    domain = discovery_info["domain"]
+    bayernluefter = hass.data["DATA_{}".format(domain)]
     name = DEFAULT_NAME
     ent = [
         BayernluefterFan(

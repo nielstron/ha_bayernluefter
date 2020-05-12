@@ -78,7 +78,6 @@ async def async_setup(hass, config):
     # sensors and switches accordingly
     disc_info = {
         'domain': DOMAIN,
-        'bayernluefter': blnet,
     }
     await async_load_platform(hass, 'sensor', DOMAIN, disc_info, config)
     await async_load_platform(hass, 'switch', DOMAIN, disc_info, config)

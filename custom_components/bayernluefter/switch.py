@@ -28,7 +28,11 @@ DEFAULT_NAME = "Bayernluefter"
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Bayernluefter component"""
 
-    bayernluefter = discovery_info["bayernluefter"]
+    if discovery_info is None:
+        _LOGGER.warning("Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions.")
+        return False
+    domain = discovery_info["domain"]
+    bayernluefter = hass.data["DATA_{}".format(domain)]
     name = DEFAULT_NAME
     ent = [
         BayernluefterPowerSwitch(
