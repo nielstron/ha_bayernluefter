@@ -73,7 +73,6 @@ async def async_setup(hass, config):
     async def fetch_data(*_):
         return await blnet.update()
 
-
     # Get the latest data from REST API and load
     # sensors and switches accordingly
     disc_info = {
@@ -81,7 +80,7 @@ async def async_setup(hass, config):
     }
     await async_load_platform(hass, 'sensor', DOMAIN, disc_info, config)
     await async_load_platform(hass, 'switch', DOMAIN, disc_info, config)
-    #await async_load_platform(hass, 'fan', DOMAIN, disc_info, config)
+    await async_load_platform(hass, 'fan', DOMAIN, disc_info, config)
 
     # Repeat if data fetching fails at first
     async_track_time_interval(hass,

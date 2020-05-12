@@ -22,11 +22,22 @@ DEFAULT_NAME = "Bayernluefter"
 SPEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 SPEED_TO_BL = {
     SPEED_OFF: 1,
-    SPEED_LOW: 4,
-    SPEED_MEDIUM: 7,
-    SPEED_HIGH: 10,
+    SPEED_LOW: 3,
+    SPEED_MEDIUM: 6,
+    SPEED_HIGH: 9,
 }
-
+BL_TO_SPEED = {
+    1: SPEED_OFF,
+    2: SPEED_OFF,
+    3: SPEED_LOW,
+    4: SPEED_LOW,
+    5: SPEED_MEDIUM,
+    6: SPEED_MEDIUM,
+    7: SPEED_MEDIUM,
+    8: SPEED_HIGH,
+    9: SPEED_HIGH,
+    10: SPEED_HIGH,
+}
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Bayernluefter component"""
@@ -63,13 +74,13 @@ class BayernluefterFan(FanEntity):
         """Return true if device is on."""
         # State logs whether the timer mode is active or not
         try:
-            return self._bayernluefter.raw_converted()["Speed_In"] > 1
+            return self._bayernluefter.raw_converted()["Speed_In"] > SPEED_TO_BL[SPEED_OFF]
         except KeyError:
             return STATE_UNKNOWN
 
     def speed(self) -> int:
         try:
-            return self._bayernluefter.raw_converted()["Speed_In"]
+            return BL_TO_SPEED[self._bayernluefter.raw_converted()["Speed_In"]]
         except KeyError:
             return STATE_UNKNOWN
 
@@ -77,10 +88,10 @@ class BayernluefterFan(FanEntity):
         await self._bayernluefter.set_speed(SPEED_TO_BL[speed])
 
     async def async_turn_off(self, **kwargs):
-        await self._bayernluefter.set_speed(1)
+        await self._bayernluefter.set_speed(SPEED_TO_BL[SPEED_OFF])
 
     async def async_turn_on(self, **kwargs):
-        await self._bayernluefter.set_speed(7)
+        await self._bayernluefter.set_speed(SPEED_TO_BL[SPEED_MEDIUM])
 
     def speed_list(self) -> list:
         return list(SPEED_TO_BL.keys())
