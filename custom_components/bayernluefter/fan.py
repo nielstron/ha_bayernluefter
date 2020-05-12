@@ -15,11 +15,17 @@ from homeassistant.const import (
     STATE_UNKNOWN,
     STATE_ON, STATE_OFF)
 from homeassistant.util import Throttle
-from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
+from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED, SPEED_HIGH, SPEED_MEDIUM, SPEED_LOW, SPEED_OFF
 
 _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Bayernluefter"
 SPEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+SPEED_TO_BL = {
+    SPEED_OFF: 1,
+    SPEED_LOW: 4,
+    SPEED_MEDIUM: 7,
+    SPEED_HIGH: 10,
+}
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -67,17 +73,17 @@ class BayernluefterFan(FanEntity):
         except KeyError:
             return STATE_UNKNOWN
 
-    async def async_set_speed(self, speed: int) -> None:
-        await self._bayernluefter.set_speed(speed)
+    async def async_set_speed(self, speed: str) -> None:
+        await self._bayernluefter.set_speed(SPEED_TO_BL[speed])
 
     async def async_turn_off(self, **kwargs):
         await self._bayernluefter.set_speed(1)
 
     async def async_turn_on(self, **kwargs):
-        await self._bayernluefter.set_speed(0)
+        await self._bayernluefter.set_speed(7)
 
     def speed_list(self) -> list:
-        return SPEEDS
+        return list(SPEED_TO_BL.keys())
 
     def supported_features(self) -> int:
         return SUPPORT_SET_SPEED
