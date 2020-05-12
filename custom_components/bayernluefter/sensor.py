@@ -5,7 +5,7 @@ import logging
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol 
 from homeassistant.components.sensor import PLATFORM_SCHEMA 
-from homeassistant.const import CONF_NAME, CONF_ICON, CONF_RESOURCE, TEMP_CELSIUS, UNIT_PERCENTAGE, CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER
+from homeassistant.const import CONF_NAME, CONF_ICON, CONF_RESOURCE, TEMP_CELSIUS, UNIT_PERCENTAGE, CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER, STATE_UNKNOWN
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 from homeassistant.helpers import aiohttp_client
@@ -74,7 +74,10 @@ class BayernluefterSensor(Entity):
     def update(self):
 
         self._attributes = self._bayernluefter.raw()
-        self._state = self._bayernluefter.raw_converted()["SystemMode"].value
+        try:
+            self._state = self._bayernluefter.raw_converted()["SystemMode"].value
+        except KeyError:
+            self._state = STATE_UNKNOWN
 
 
 class BayernluefterSpecialSensor(BayernluefterSensor):
@@ -89,11 +92,17 @@ class BayernluefterSpecialSensor(BayernluefterSensor):
         return self._unit_of_measurement
 
     def update(self):
-        self._state = self._bayernluefter.raw_converted()[self._type].value
+        try:
+            self._state = self._bayernluefter.raw_converted()[self._type].value
+        except KeyError:
+            self._state = STATE_UNKNOWN
 
 
 class BayernluefterAbsSensor(BayernluefterSpecialSensor):
 
     def update(self):
         # convert grams per cubic meter to milligrams per cubic meter
-        self._state = self._bayernluefter.raw_converted()[self._type].value/1000
+        try:
+            self._state = self._bayernluefter.raw_converted()[self._type].value/1000
+        except KeyError:
+            self._state = STATE_UNKNOWN

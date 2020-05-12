@@ -61,7 +61,10 @@ class BayernluefterPowerSwitch(SwitchDevice):
     @property
     def is_on(self):
         """Return true if device is on."""
-        return self._bayernluefter.raw_converted()["_SystemOn"]
+        try:
+            return self._bayernluefter.raw_converted()["_SystemOn"]
+        except KeyError:
+            return STATE_UNKNOWN
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
@@ -94,7 +97,10 @@ class BayernluefterTimerSwitch(SwitchDevice):
     @property
     def is_on(self):
         """Return true if device is on."""
-        return self._bayernluefter.raw_converted()["_MaxMode"]
+        try:
+            return self._bayernluefter.raw_converted()["_MaxMode"]
+        except KeyError:
+            return STATE_UNKNOWN
 
     async def async_toggle(self, **kwargs):
         await self._bayernluefter.timer_toggle()

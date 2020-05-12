@@ -51,10 +51,16 @@ class BayernluefterFan(FanEntity):
     def is_on(self):
         """Return true if device is on."""
         # State logs whether the timer mode is active or not
-        return self._bayernluefter.raw_converted()["Speed_In"] > 1
+        try:
+            return self._bayernluefter.raw_converted()["Speed_In"] > 1
+        except KeyError:
+            return STATE_UNKNOWN
 
     def speed(self) -> int:
-        return self._bayernluefter.raw_converted()["Speed_In"]
+        try:
+            return self._bayernluefter.raw_converted()["Speed_In"]
+        except KeyError:
+            return STATE_UNKNOWN
 
     async def async_set_speed(self, speed: int) -> None:
         await self._bayernluefter.set_speed(speed)
