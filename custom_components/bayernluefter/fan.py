@@ -99,8 +99,10 @@ class BayernluefterFan(FanEntity):
     async def async_turn_on(self, **kwargs):
         await self._bayernluefter.set_speed(SPEED_TO_BL[SPEED_MEDIUM])
 
+    @property
     def speed_list(self) -> list:
         return SUPPORTED_SPEEDS
-
+    
+    @property
     def supported_features(self) -> int:
         return SUPPORT_SET_SPEED
