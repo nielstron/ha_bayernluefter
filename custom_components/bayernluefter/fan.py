@@ -85,7 +85,7 @@ class BayernluefterFan(FanEntity):
             return STATE_UNKNOWN
  
     @property
-    def speed(self) -> int:
+    def speed(self) -> str:
         try:
             return BL_TO_SPEED[self._bayernluefter.raw_converted()["Speed_Out"]]
         except KeyError:
