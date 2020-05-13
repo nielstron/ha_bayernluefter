@@ -20,6 +20,12 @@ from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED, SPEED_HIG
 _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Bayernluefter"
 SPEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+SUPPORTED_SPEEDS = [
+    SPEED_OFF,
+    SPEED_LOW,
+    SPEED_MEDIUM,
+    SPEED_HIGH
+]
 SPEED_TO_BL = {
     SPEED_OFF: 1,
     SPEED_LOW: 3,
@@ -74,13 +80,13 @@ class BayernluefterFan(FanEntity):
         """Return true if device is on."""
         # State logs whether the timer mode is active or not
         try:
-            return self._bayernluefter.raw_converted()["Speed_In"] > SPEED_TO_BL[SPEED_OFF]
+            return self._bayernluefter.raw_converted()["Speed_Out"] > SPEED_TO_BL[SPEED_OFF]
         except KeyError:
             return STATE_UNKNOWN
 
     def speed(self) -> int:
         try:
-            return BL_TO_SPEED[self._bayernluefter.raw_converted()["Speed_In"]]
+            return BL_TO_SPEED[self._bayernluefter.raw_converted()["Speed_Out"]]
         except KeyError:
             return STATE_UNKNOWN
 
@@ -94,7 +100,7 @@ class BayernluefterFan(FanEntity):
         await self._bayernluefter.set_speed(SPEED_TO_BL[SPEED_MEDIUM])
 
     def speed_list(self) -> list:
-        return list(SPEED_TO_BL.keys())
+        return SUPPORTED_SPEEDS
 
     def supported_features(self) -> int:
         return SUPPORT_SET_SPEED
