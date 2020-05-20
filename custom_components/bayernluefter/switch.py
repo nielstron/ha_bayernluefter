@@ -47,7 +47,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     async_add_entities(ent)
 
 
-class BayernluefterPowerSwitch(SwitchDevice):
+class BayernluefterPowerSwitch(SwitchEntity):
     """
     Representation of a switch that toggles a digital output of the UVR1611.
     """
@@ -83,7 +83,7 @@ class BayernluefterPowerSwitch(SwitchDevice):
         await self._bayernluefter.power_toggle()
 
 
-class BayernluefterTimerSwitch(SwitchDevice):
+class BayernluefterTimerSwitch(SwitchEntity):
     """
     Representation of a switch that toggles a digital output of the UVR1611.
     """
