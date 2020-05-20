@@ -15,7 +15,12 @@ from homeassistant.const import (
     STATE_UNKNOWN,
     STATE_ON, STATE_OFF)
 from homeassistant.util import Throttle
-from homeassistant.components.switch import SwitchDevice
+
+try:
+    from homeassistant.components.switch import SwitchEntity
+except ImportError:
+    from homeassistant.components.switch import SwitchDevice as SwitchEntity
+
 from homeassistant.helpers import aiohttp_client
 
 _LOGGER = logging.getLogger(__name__)
