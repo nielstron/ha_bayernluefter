@@ -10,3 +10,7 @@ bayernluefter:
     resource: http://192.168.178.5
     scan_interval: 30 # Optional scan interval in seconds
 ```
+
+## Installation
+
+Copy into your custom_components directory or install via [HACS](https://hacs.xyz/)
