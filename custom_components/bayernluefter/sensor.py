@@ -5,7 +5,13 @@ import logging
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol 
 from homeassistant.components.sensor import PLATFORM_SCHEMA 
-from homeassistant.const import CONF_NAME, CONF_ICON, CONF_RESOURCE, TEMP_CELSIUS, UNIT_PERCENTAGE, CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER, STATE_UNKNOWN
+from homeassistant.const import CONF_NAME, CONF_ICON, CONF_RESOURCE, TEMP_CELSIUS, CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER, STATE_UNKNOWN
+
+try:  # TODO: Remove for core PR. This ensures compatibility with <0.115
+    from homeassistant.const import PERCENTAGE
+except Exception:
+    from homeassistant.const import UNIT_PERCENTAGE as PERCENTAGE
+    
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 from homeassistant.helpers import aiohttp_client
@@ -51,7 +57,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         )
     ]
     ent.extend([BayernluefterSpecialSensor(name=f"{name} {mt}", measure_type=mt, unit_of_measurement=TEMP_CELSIUS, bayernluefter=bayernluefter) for mt in TEMP_MEASURES])
-    ent.extend([BayernluefterSpecialSensor(name=f"{name} {mt}", measure_type=mt, unit_of_measurement=UNIT_PERCENTAGE, bayernluefter=bayernluefter) for mt in REL_HUM_MEASURES])
+    ent.extend([BayernluefterSpecialSensor(name=f"{name} {mt}", measure_type=mt, unit_of_measurement=PERCENTAGE, bayernluefter=bayernluefter) for mt in REL_HUM_MEASURES])
     ent.extend([BayernluefterAbsSensor(name=f"{name} {mt}", measure_type=mt, unit_of_measurement=CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER, bayernluefter=bayernluefter) for mt in ABS_HUM_MEASURES])
     async_add_entities(ent)
 
