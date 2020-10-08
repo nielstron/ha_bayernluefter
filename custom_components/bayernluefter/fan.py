@@ -15,7 +15,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
     STATE_ON, STATE_OFF)
 from homeassistant.util import Throttle
-from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED, SPEED_HIGH, SPEED_MEDIUM, SPEED_LOW, SPEED_OFF
+from homeassistant.components.fan import FanEntity, ATTR_SPEED, SUPPORT_SET_SPEED, SPEED_HIGH, SPEED_MEDIUM, SPEED_LOW, SPEED_OFF
 
 _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Bayernluefter"
@@ -28,15 +28,15 @@ SUPPORTED_SPEEDS = [
 ]
 SPEED_TO_BL = {
     SPEED_OFF: 1,
-    SPEED_LOW: 3,
-    SPEED_MEDIUM: 6,
+    SPEED_LOW: 2,
+    SPEED_MEDIUM: 4,
     SPEED_HIGH: 9,
 }
 BL_TO_SPEED = {
     1: SPEED_OFF,
-    2: SPEED_OFF,
+    2: SPEED_LOW,
     3: SPEED_LOW,
-    4: SPEED_LOW,
+    4: SPEED_MEDIUM,
     5: SPEED_MEDIUM,
     6: SPEED_MEDIUM,
     7: SPEED_MEDIUM,
@@ -80,7 +80,7 @@ class BayernluefterFan(FanEntity):
         """Return true if device is on."""
         # State logs whether the timer mode is active or not
         try:
-            return self._bayernluefter.raw_converted()["Speed_Out"] > SPEED_TO_BL[SPEED_OFF]
+            return self._bayernluefter.raw_converted()["Speed_Out"] > SPEED_TO_BL[SPEED_LOW]
         except KeyError:
             return STATE_UNKNOWN
  
@@ -107,3 +107,5 @@ class BayernluefterFan(FanEntity):
     @property
     def supported_features(self) -> int:
         return SUPPORT_SET_SPEED
+    
+   
