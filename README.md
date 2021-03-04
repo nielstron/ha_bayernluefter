@@ -11,7 +11,6 @@ Example configuration.yaml
 
 ```yaml
 bayernluefter:
-    name: Living Room WRG
     resource: http://192.168.178.5
     scan_interval: 30 # Optional scan interval in seconds
 ```
