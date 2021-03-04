@@ -8,33 +8,36 @@ from typing import Optional
 from pyernluefter import Bayernluefter
 
 from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
-from homeassistant.util.percentage import ranged_value_to_percentage, int_states_in_range, percentage_to_ranged_value
+from homeassistant.util.percentage import (
+    ranged_value_to_percentage,
+    int_states_in_range,
+    percentage_to_ranged_value,
+)
 
 _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Bayernluefter"
 
 BAYERNLUEFTER_SPEED_RANGE = (1, 10)
 
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Bayernluefter component"""
 
     if discovery_info is None:
-        _LOGGER.warning("Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions.")
+        _LOGGER.warning(
+            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."
+        )
         return False
     domain = discovery_info["domain"]
     bayernluefter = hass.data["DATA_{}".format(domain)]
     name = DEFAULT_NAME
     ent = [
-        BayernluefterFan(
-            name=f"{name} Fan Speed",
-            bayernluefter=bayernluefter
-        ),
+        BayernluefterFan(name=f"{name} Fan Speed", bayernluefter=bayernluefter),
     ]
     async_add_entities(ent)
 
 
 class BayernluefterFan(FanEntity):
-
     def __init__(self, name, bayernluefter: Bayernluefter):
         """Initialize the switch."""
         self._bayernluefter = bayernluefter
@@ -54,7 +57,9 @@ class BayernluefterFan(FanEntity):
 
     @property
     def percentage(self):
-        return ranged_value_to_percentage(BAYERNLUEFTER_SPEED_RANGE, self._current_speed())
+        return ranged_value_to_percentage(
+            BAYERNLUEFTER_SPEED_RANGE, self._current_speed()
+        )
 
     @property
     def is_on(self):
@@ -62,7 +67,9 @@ class BayernluefterFan(FanEntity):
         return self._current_speed() > 0
 
     async def async_set_speed(self, percentage: int) -> None:
-        await self._bayernluefter.set_speed(int(percentage_to_ranged_value(BAYERNLUEFTER_SPEED_RANGE, percentage)))
+        await self._bayernluefter.set_speed(
+            int(percentage_to_ranged_value(BAYERNLUEFTER_SPEED_RANGE, percentage))
+        )
 
     async def async_turn_off(self, **kwargs):
         await self._bayernluefter.set_speed(0)
@@ -73,5 +80,3 @@ class BayernluefterFan(FanEntity):
     @property
     def supported_features(self) -> int:
         return SUPPORT_SET_SPEED
-    
-   

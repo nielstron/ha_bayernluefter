@@ -11,9 +11,7 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME, CONF_ICON, CONF_RESOURCE
-from homeassistant.const import (
-    STATE_UNKNOWN,
-    STATE_ON, STATE_OFF)
+from homeassistant.const import STATE_UNKNOWN, STATE_ON, STATE_OFF
 from homeassistant.util import Throttle
 
 try:
@@ -25,7 +23,7 @@ from homeassistant.helpers import aiohttp_client
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = 'bayernluefter'
+DOMAIN = "bayernluefter"
 
 DEFAULT_NAME = "Bayernluefter"
 
@@ -34,20 +32,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     """Set up the Bayernluefter component"""
 
     if discovery_info is None:
-        _LOGGER.warning("Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions.")
+        _LOGGER.warning(
+            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."
+        )
         return False
     domain = discovery_info["domain"]
     bayernluefter = hass.data["DATA_{}".format(domain)]
     name = DEFAULT_NAME
     ent = [
-        BayernluefterPowerSwitch(
-            name=f"{name} Power",
-            bayernluefter=bayernluefter
-        ),
-        BayernluefterTimerSwitch(
-            name=f"{name} Timer",
-            bayernluefter=bayernluefter
-        )
+        BayernluefterPowerSwitch(name=f"{name} Power", bayernluefter=bayernluefter),
+        BayernluefterTimerSwitch(name=f"{name} Timer", bayernluefter=bayernluefter),
     ]
     async_add_entities(ent)
 
@@ -113,4 +107,3 @@ class BayernluefterTimerSwitch(SwitchEntity):
 
     async def async_toggle(self, **kwargs):
         await self._bayernluefter.timer_toggle()
-
