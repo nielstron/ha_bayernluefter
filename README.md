@@ -184,7 +184,6 @@ elements:
     font_style:
       font-size: 1.0em
       font-color: white
-      text-shadow: 1px 1px black
     style:
       top: 33%
       left: 32%
