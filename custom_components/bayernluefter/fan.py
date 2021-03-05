@@ -53,7 +53,11 @@ class BayernluefterFan(FanEntity):
         return int_states_in_range(BAYERNLUEFTER_SPEED_RANGE)
 
     def _current_speed(self):
-        return self._bayernluefter.raw_converted()["Speed_Out"]
+        try:
+            return self._bayernluefter.raw_converted()["Speed_Out"]
+        except KeyError:
+            # TODO currently returns 0 (=off) when not initialized, should (?) be UNKNOWN
+            return 0
 
     @property
     def percentage(self):
