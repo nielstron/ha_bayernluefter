@@ -4,6 +4,7 @@ Sensor and Switch for Bayernluefter
 import logging
 
 import voluptuous as vol
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.discovery import async_load_platform
 
 from homeassistant.const import (
@@ -56,7 +57,7 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
-async def async_setup(hass, config):
+async def async_setup(hass: HomeAssistant, config):
     """Set up the BLNET component"""
 
     config = config[DOMAIN]
@@ -88,9 +89,9 @@ async def async_setup(hass, config):
         "domain": DOMAIN,
         "name": name,
     }
-    await async_load_platform(hass, "sensor", DOMAIN, disc_info, config)
-    await async_load_platform(hass, "switch", DOMAIN, disc_info, config)
-    await async_load_platform(hass, "fan", DOMAIN, disc_info, config)
+    hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, disc_info, config))
+    hass.async_create_task(async_load_platform(hass, "switch", DOMAIN, disc_info, config))
+    hass.async_create_task(async_load_platform(hass, "fan", DOMAIN, disc_info, config))
 
     # Repeat if data fetching fails at first
     async_track_time_interval(hass, fetch_data, timedelta(seconds=scan_interval))
