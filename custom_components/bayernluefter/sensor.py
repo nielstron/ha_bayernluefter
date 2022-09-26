@@ -30,7 +30,6 @@ _LOGGER = logging.getLogger(__name__)
 
 MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
 
-DEFAULT_NAME = "Bayernluefter"
 
 TEMP_MEASURES = ["Temp_In", "Temp_Out", "Temp_Fresh"]
 REL_HUM_MEASURES = [
@@ -53,8 +52,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         )
         return False
     domain = discovery_info["domain"]
-    bayernluefter = hass.data["DATA_{}".format(domain)]
-    name = DEFAULT_NAME
+    name = discovery_info["name"]
+    bayernluefter = hass.data["DATA_{}_{}".format(domain, name)]
     ent = [BayernluefterSensor(name=name, bayernluefter=bayernluefter)]
     ent.extend(
         [

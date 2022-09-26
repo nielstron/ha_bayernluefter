@@ -37,8 +37,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         )
         return False
     domain = discovery_info["domain"]
-    bayernluefter = hass.data["DATA_{}".format(domain)]
-    name = DEFAULT_NAME
+    name = discovery_info["name"]
+    bayernluefter = hass.data["DATA_{}_{}".format(domain, name)]
     ent = [
         BayernluefterPowerSwitch(name=f"{name} Power", bayernluefter=bayernluefter),
         BayernluefterTimerSwitch(name=f"{name} Timer", bayernluefter=bayernluefter),

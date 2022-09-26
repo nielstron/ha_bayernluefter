@@ -9,6 +9,7 @@ from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.const import (
     CONF_RESOURCE,
     CONF_PASSWORD,
+    CONF_NAME,
     CONF_SCAN_INTERVAL,
     TEMP_CELSIUS,
 )
@@ -27,6 +28,8 @@ DOMAIN = "bayernluefter"
 # scan every 30 seconds per default
 DEFAULT_SCAN_INTERVAL = 30
 
+DEFAULT_NAME = "Bayernluefter"
+
 UNIT = {"analog": TEMP_CELSIUS, "speed": "rpm", "power": "kW", "energy": "kWh"}
 ICON = {
     "analog": "mdi:thermometer",
@@ -43,6 +46,9 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
                 ): cv.positive_int,
+                vol.Optional(
+                    CONF_NAME, default=DEFAULT_NAME,
+                ): cv.string,
             }
         ),
     },
@@ -56,6 +62,7 @@ async def async_setup(hass, config):
     config = config[DOMAIN]
     resource = config.get(CONF_RESOURCE)
     scan_interval = config.get(CONF_SCAN_INTERVAL)
+    name = config.get(CONF_NAME)
     session = aiohttp_client.async_get_clientsession(hass)
 
     # Initialize the BL-NET sensor
@@ -69,7 +76,7 @@ async def async_setup(hass, config):
         return False
 
     # set the communication entity
-    hass.data["DATA_{}".format(DOMAIN)] = blnet
+    hass.data["DATA_{}_{}".format(DOMAIN, name)] = blnet
 
     # make sure the communication device gets updated once in a while
     async def fetch_data(*_):
@@ -79,6 +86,7 @@ async def async_setup(hass, config):
     # sensors and switches accordingly
     disc_info = {
         "domain": DOMAIN,
+        "name": name,
     }
     await async_load_platform(hass, "sensor", DOMAIN, disc_info, config)
     await async_load_platform(hass, "switch", DOMAIN, disc_info, config)
