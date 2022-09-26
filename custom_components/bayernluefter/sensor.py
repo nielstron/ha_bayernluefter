@@ -2,13 +2,7 @@
 import datetime
 import logging
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import (
-    CONF_NAME,
-    CONF_ICON,
-    CONF_RESOURCE,
     TEMP_CELSIUS,
     CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
     STATE_UNKNOWN,
@@ -20,8 +14,6 @@ except Exception:
     from homeassistant.const import UNIT_PERCENTAGE as PERCENTAGE
 
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import Throttle
-from homeassistant.helpers import aiohttp_client
 
 from pyernluefter import Bayernluefter
 

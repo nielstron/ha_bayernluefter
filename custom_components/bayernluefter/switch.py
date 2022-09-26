@@ -3,23 +3,15 @@ Connect to a Bayernluefter via it's web interface and read and write data
 Switch to control the power state
 """
 import logging
-import datetime
 
 from pyernluefter import Bayernluefter
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_ICON, CONF_RESOURCE
-from homeassistant.const import STATE_UNKNOWN, STATE_ON, STATE_OFF
-from homeassistant.util import Throttle
+from homeassistant.const import STATE_UNKNOWN
 
 try:
     from homeassistant.components.switch import SwitchEntity
 except ImportError:
     from homeassistant.components.switch import SwitchDevice as SwitchEntity
-
-from homeassistant.helpers import aiohttp_client
 
 _LOGGER = logging.getLogger(__name__)
 
