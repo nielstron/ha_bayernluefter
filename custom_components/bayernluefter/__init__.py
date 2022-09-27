@@ -9,7 +9,6 @@ from homeassistant.helpers.discovery import async_load_platform
 
 from homeassistant.const import (
     CONF_RESOURCE,
-    CONF_PASSWORD,
     CONF_NAME,
     CONF_SCAN_INTERVAL,
     TEMP_CELSIUS,
@@ -38,7 +37,7 @@ ICON = {
     "energy": "mdi:power-plug",
 }
 
-BL_SCHEMA = {
+BL_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema(
         {
             vol.Required(CONF_RESOURCE): cv.url,
@@ -49,12 +48,10 @@ BL_SCHEMA = {
                 CONF_NAME, default=DEFAULT_NAME,
             ): cv.string,
         }
-    ),
-}
-CONFIG_SCHEMA = vol.Schema(
-    vol.Any([BL_SCHEMA], BL_SCHEMA),
+    )},
     extra=vol.ALLOW_EXTRA,
 )
+CONFIG_SCHEMA = vol.Any([BL_SCHEMA], BL_SCHEMA),
 
 
 async def async_setup(hass: HomeAssistant, raw_config):
