@@ -51,7 +51,7 @@ BL_SCHEMA = vol.Schema({
     )},
     extra=vol.ALLOW_EXTRA,
 )
-CONFIG_SCHEMA = vol.Any([BL_SCHEMA], BL_SCHEMA),
+CONFIG_SCHEMA = vol.Any([BL_SCHEMA], BL_SCHEMA)
 
 
 async def async_setup(hass: HomeAssistant, raw_config):
