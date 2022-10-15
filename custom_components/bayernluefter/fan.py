@@ -30,7 +30,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         return False
     domain = discovery_info["domain"]
     name = discovery_info["name"]
-    bayernluefter = hass.data["DATA_{}_{}".format(domain, name)]
+    bayernluefter = hass.data[domain][name]
     ent = [
         BayernluefterFan(name=f"{name} Fan Speed", bayernluefter=bayernluefter),
     ]
