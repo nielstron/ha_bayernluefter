@@ -7,13 +7,29 @@ The Bayernlüfter needs to have a WiFi-Module and additional humidity sensors in
 
 The component enables controlling the fan, monitoring humditity and toggling Power and Timer mode.
 
-Example configuration.yaml
+You can configure this device as a top-level entity, and it will add all sensors and switches for above mentioned features.
 
 ```yaml
+# Example configuration.yaml
 bayernluefter:
     resource: http://192.168.178.5
     scan_interval: 30 # Optional scan interval in seconds
 ```
+
+If you want to use several devices you can pass a list of resources.
+Each resource needs a unique name.
+
+```yaml
+# Example configuration.yaml
+bayernluefter:
+  - name: Living Room
+    resource: http://192.168.178.5
+    scan_interval: 30 # Optional scan interval in seconds
+  - name: Kitchen
+    resource: http://192.168.179.6
+    scan_interval: 30 # Optional scan interval in seconds
+```
+
 
 ## Installation
 
