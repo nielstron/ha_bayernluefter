@@ -37,21 +37,23 @@ ICON = {
     "energy": "mdi:power-plug",
 }
 
-BL_SCHEMA = vol.Schema({
-    DOMAIN: vol.Schema(
-        {
-            vol.Required(CONF_RESOURCE): cv.url,
-            vol.Optional(
-                CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-            ): cv.positive_int,
-            vol.Optional(
-                CONF_NAME, default=DEFAULT_NAME,
-            ): cv.string,
-        }
-    )},
+BL_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_RESOURCE): cv.url,
+        vol.Optional(
+            CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
+        ): cv.positive_int,
+        vol.Optional(
+            CONF_NAME, default=DEFAULT_NAME,
+        ): cv.string,
+    }
+)
+CONFIG_SCHEMA = vol.Schema(
+    {
+        DOMAIN: vol.All(cv.ensure_list, [BL_SCHEMA]),
+    },
     extra=vol.ALLOW_EXTRA,
 )
-CONFIG_SCHEMA = vol.Any([BL_SCHEMA], BL_SCHEMA)
 
 
 async def async_setup(hass: HomeAssistant, raw_config):
