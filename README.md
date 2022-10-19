@@ -208,3 +208,31 @@ elements:
       transform: none
 ```
 
+
+### Debugging
+
+In order to debug this component, it is possible to leverage the mock bayernluefter web server used for testing the component [pyernluefter](https://github.com/nielstron/pyernluefter) as an example endpoint. To use it, configure `localhost:8126` as endpoint and run the following script.
+
+```python
+from pyernluefter.tests.test_structure.bayernluefter_mock_server import BayernLuftHandler, BayernLuftServer
+handler = BayernLuftHandler
+
+max_retries = 10
+r = 0
+while not self.server:
+    try:
+        # Connect to any open port
+        self.server = BayernLuftServer((ADDRESS, 8126), handler)
+    except OSError:
+        if r < max_retries:
+            r += 1
+        else:
+            raise
+        time.sleep(1)
+
+self.server_control = Server(self.server)
+self.port = self.server_control.get_port()
+self.url = "{}:{}".format(ADDRESS, self.port)
+# Start test server before running any tests
+self.server_control.start_server()
+``
