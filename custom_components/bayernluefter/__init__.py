@@ -55,28 +55,28 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+def gen_fetch_data(blnet):
+    async def fetch_data(*_):
+        return await blnet.update()
+    return fetch_data
+
 
 async def async_setup(hass: HomeAssistant, raw_config):
     """Set up the BLNET component"""
 
     configs = raw_config[DOMAIN]
-    if not isinstance(configs, list):
-        configs = [configs]
-    hass.data[DOMAIN] = {}
-    used_names = set()
+    used_names = set(config[CONF_NAME] for config in configs)
+    # Validate that unique BL entities are created
+    if len(used_names) != len(configs):
+        _LOGGER.error("Configuration invalid: use unique names when setting up multiple BayernLuefter entities")
 
+    hass.data[DOMAIN] = {}
+
+    session = aiohttp_client.async_get_clientsession(hass)
     for config in configs:
         resource = config.get(CONF_RESOURCE)
         scan_interval = config.get(CONF_SCAN_INTERVAL)
         name = config.get(CONF_NAME)
-        session = aiohttp_client.async_get_clientsession(hass)
-
-        # Validate that unique BL entities are created
-        if name in used_names:
-            _LOGGER.error("Configuration invalid: use unique names when setting up multiple BayernLuefter entities")
-            del hass.data[DOMAIN]
-            return False
-        used_names.add(name)
 
         # Initialize the BL-NET sensor
         try:
@@ -86,28 +86,24 @@ async def async_setup(hass: HomeAssistant, raw_config):
                 _LOGGER.error("No Bayernluefter reached at {}".format(resource))
             else:
                 _LOGGER.error("Configuration invalid: {}".format(ex))
-            del hass.data[DOMAIN]
-            return False
+            continue
 
         # set the communication entity
         hass.data[DOMAIN][name] = blnet
 
-        # make sure the communication device gets updated once in a while
-        async def fetch_data(*_):
-            return await blnet.update()
-
-        # Get the latest data from REST API and load
-        # sensors and switches accordingly
         disc_info = {
             "domain": DOMAIN,
             "name": name,
         }
+        # trigger an initial fetching impulse
+        hass.async_create_task(gen_fetch_data(blnet)())
+        # load sensors and switches accordingly
         hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, disc_info, config))
         hass.async_create_task(async_load_platform(hass, "switch", DOMAIN, disc_info, config))
         hass.async_create_task(async_load_platform(hass, "fan", DOMAIN, disc_info, config))
 
-        # Repeat if data fetching fails at first
-        async_track_time_interval(hass, fetch_data, timedelta(seconds=scan_interval))
+        # make sure the communication device gets updated once in a while
+        async_track_time_interval(hass, gen_fetch_data(blnet), timedelta(seconds=scan_interval))
 
     # Fetch method takes care of adding dicovered sensors
     return True
