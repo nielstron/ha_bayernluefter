@@ -138,6 +138,6 @@ class BayernluefterAbsSensor(BayernluefterSpecialSensor):
     def update(self):
         # convert grams per cubic meter to milligrams per cubic meter
         try:
-            self._state = self._bayernluefter.raw_converted()[self._type] / 1000
+            self._state = self._bayernluefter.raw_converted()[self._type] * 1000
         except KeyError:
             self._state = STATE_UNKNOWN
