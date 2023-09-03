@@ -32,6 +32,7 @@ REL_HUM_MEASURES = [
 ABS_HUM_MEASURES = [
     "abs_Humidity_In",
     "abs_Humidity_Out",
+    "Humidity_Transport",
 ]
 
 
