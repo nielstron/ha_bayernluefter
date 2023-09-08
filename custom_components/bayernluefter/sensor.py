@@ -84,7 +84,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     )
     ent.extend(
         [
-            BayernluefterSpecialSensor(
+            BayernluefterAbsSensor(
                 name=f"{name} {mt}",
                 measure_type=mt,
                 unit_of_measurement=GRAMS_PER_DAY,
