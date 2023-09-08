@@ -20,6 +20,7 @@ from pyernluefter import Bayernluefter
 __version__ = "v0.1"
 _LOGGER = logging.getLogger(__name__)
 
+GRAMS_PER_DAY = "g/d"
 MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
 
 
@@ -32,8 +33,8 @@ REL_HUM_MEASURES = [
 ABS_HUM_MEASURES = [
     "abs_Humidity_In",
     "abs_Humidity_Out",
-    "Humidity_Transport",
 ]
+HUM_TRANSPORT_MEASURES = ["Humidity_Transport"]
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -79,6 +80,17 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 bayernluefter=bayernluefter,
             )
             for mt in ABS_HUM_MEASURES
+        ]
+    )
+    ent.extend(
+        [
+            BayernluefterSpecialSensor(
+                name=f"{name} {mt}",
+                measure_type=mt,
+                unit_of_measurement=GRAMS_PER_DAY,
+                bayernluefter=bayernluefter,
+            )
+            for mt in HUM_TRANSPORT_MEASURES
         ]
     )
     async_add_entities(ent)
