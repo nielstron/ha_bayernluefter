@@ -71,6 +71,12 @@ class BayernluefterFan(FanEntity):
         return self._current_speed() > 0
 
     async def async_set_speed(self, percentage: int) -> None:
+        # TODO remove: only kept for backwards compatibility
+        await self._bayernluefter.set_speed(
+            int(percentage_to_ranged_value(BAYERNLUEFTER_SPEED_RANGE, percentage))
+        )
+
+    async def async_set_percentage(self, percentage: int) -> None:
         await self._bayernluefter.set_speed(
             int(percentage_to_ranged_value(BAYERNLUEFTER_SPEED_RANGE, percentage))
         )
