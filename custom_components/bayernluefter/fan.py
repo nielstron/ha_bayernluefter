@@ -15,7 +15,6 @@ from homeassistant.util.percentage import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-DEFAULT_NAME = "Bayernluefter"
 
 BAYERNLUEFTER_SPEED_RANGE = (1, 10)
 

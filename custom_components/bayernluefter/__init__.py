@@ -11,7 +11,6 @@ from homeassistant.const import (
     CONF_RESOURCE,
     CONF_NAME,
     CONF_SCAN_INTERVAL,
-    TEMP_CELSIUS,
 )
 from homeassistant.helpers.event import async_track_time_interval
 from datetime import timedelta
@@ -28,14 +27,6 @@ DOMAIN = "bayernluefter"
 DEFAULT_SCAN_INTERVAL = 30
 
 DEFAULT_NAME = "Bayernluefter"
-
-UNIT = {"analog": TEMP_CELSIUS, "speed": "rpm", "power": "kW", "energy": "kWh"}
-ICON = {
-    "analog": "mdi:thermometer",
-    "speed": "mdi:speedometer",
-    "power": "mdi:power-plug",
-    "energy": "mdi:power-plug",
-}
 
 BL_SCHEMA = vol.Schema(
     {

@@ -15,9 +15,6 @@ except ImportError:
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "bayernluefter"
-
-DEFAULT_NAME = "Bayernluefter"
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

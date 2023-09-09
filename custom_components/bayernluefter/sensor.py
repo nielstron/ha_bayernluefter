@@ -1,5 +1,4 @@
 """Sensor platform for Local Diskspace"""
-import datetime
 import logging
 
 from homeassistant.const import (
@@ -17,12 +16,9 @@ from homeassistant.helpers.entity import Entity
 
 from pyernluefter import Bayernluefter
 
-__version__ = "v0.1"
 _LOGGER = logging.getLogger(__name__)
 
 MILLIGRAMS_PER_DAY = "mg/d"
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
-
 
 TEMP_MEASURES = ["Temp_In", "Temp_Out", "Temp_Fresh"]
 REL_HUM_MEASURES = [
