@@ -20,7 +20,7 @@ from pyernluefter import Bayernluefter
 __version__ = "v0.1"
 _LOGGER = logging.getLogger(__name__)
 
-GRAMS_PER_DAY = "g/d"
+MILLIGRAMS_PER_DAY = "mg/d"
 MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
 
 
@@ -84,10 +84,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     )
     ent.extend(
         [
-            BayernluefterAbsSensor(
+            BayernluefterSpecialSensor(
                 name=f"{name} {mt}",
                 measure_type=mt,
-                unit_of_measurement=GRAMS_PER_DAY,
+                unit_of_measurement=MILLIGRAMS_PER_DAY,
                 bayernluefter=bayernluefter,
             )
             for mt in HUM_TRANSPORT_MEASURES
