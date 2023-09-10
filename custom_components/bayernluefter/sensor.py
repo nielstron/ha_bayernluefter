@@ -1,5 +1,7 @@
-"""Sensor platform for Local Diskspace"""
-import datetime
+"""
+Support for Bayernluefter sensors.
+"""
+
 import logging
 
 from homeassistant.const import (
@@ -17,12 +19,9 @@ from homeassistant.helpers.entity import Entity
 
 from pyernluefter import Bayernluefter
 
-__version__ = "v0.1"
 _LOGGER = logging.getLogger(__name__)
 
 MILLIGRAMS_PER_DAY = "mg/d"
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(seconds=60)
-
 
 TEMP_MEASURES = ["Temp_In", "Temp_Out", "Temp_Fresh"]
 REL_HUM_MEASURES = [
@@ -42,7 +41,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     if discovery_info is None:
         _LOGGER.warning(
-            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."
+            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."  # noqa: E501
         )
         return False
     domain = discovery_info["domain"]
@@ -116,7 +115,6 @@ class BayernluefterSensor(Entity):
         return self._attributes
 
     def update(self):
-
         self._attributes = self._bayernluefter.raw()
         try:
             self._state = self._bayernluefter.raw_converted()["SystemMode"].value

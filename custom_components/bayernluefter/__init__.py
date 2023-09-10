@@ -1,22 +1,21 @@
 """
-Sensor and Switch for Bayernluefter
+Support for Bayernluefter.
 """
+
 import logging
-
 import voluptuous as vol
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.discovery import async_load_platform
+from datetime import timedelta
 
+from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     CONF_RESOURCE,
     CONF_NAME,
     CONF_SCAN_INTERVAL,
-    TEMP_CELSIUS,
 )
-from homeassistant.helpers.event import async_track_time_interval
-from datetime import timedelta
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers.discovery import async_load_platform
+from homeassistant.helpers.event import async_track_time_interval
+import homeassistant.helpers.config_validation as cv
 
 from pyernluefter import Bayernluefter
 
@@ -29,14 +28,6 @@ DEFAULT_SCAN_INTERVAL = 30
 
 DEFAULT_NAME = "Bayernluefter"
 
-UNIT = {"analog": TEMP_CELSIUS, "speed": "rpm", "power": "kW", "energy": "kWh"}
-ICON = {
-    "analog": "mdi:thermometer",
-    "speed": "mdi:speedometer",
-    "power": "mdi:power-plug",
-    "energy": "mdi:power-plug",
-}
-
 BL_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_RESOURCE): cv.url,
@@ -44,7 +35,8 @@ BL_SCHEMA = vol.Schema(
             CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
         ): cv.positive_int,
         vol.Optional(
-            CONF_NAME, default=DEFAULT_NAME,
+            CONF_NAME,
+            default=DEFAULT_NAME,
         ): cv.string,
     }
 )
@@ -55,9 +47,11 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+
 def gen_fetch_data(blnet):
     async def fetch_data(*_):
         return await blnet.update()
+
     return fetch_data
 
 
@@ -68,7 +62,9 @@ async def async_setup(hass: HomeAssistant, raw_config):
     used_names = set(config[CONF_NAME] for config in configs)
     # Validate that unique BL entities are created
     if len(used_names) != len(configs):
-        _LOGGER.error("Configuration invalid: use unique names when setting up multiple BayernLuefter entities")
+        _LOGGER.error(
+            "Configuration invalid: use unique names when setting up multiple BayernLuefter entities"  # noqa: E501
+        )
 
     hass.data[DOMAIN] = {}
 
@@ -98,12 +94,20 @@ async def async_setup(hass: HomeAssistant, raw_config):
         # trigger an initial fetching impulse
         hass.async_create_task(gen_fetch_data(blnet)())
         # load sensors and switches accordingly
-        hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, disc_info, config))
-        hass.async_create_task(async_load_platform(hass, "switch", DOMAIN, disc_info, config))
-        hass.async_create_task(async_load_platform(hass, "fan", DOMAIN, disc_info, config))
+        hass.async_create_task(
+            async_load_platform(hass, "sensor", DOMAIN, disc_info, config)
+        )
+        hass.async_create_task(
+            async_load_platform(hass, "switch", DOMAIN, disc_info, config)
+        )
+        hass.async_create_task(
+            async_load_platform(hass, "fan", DOMAIN, disc_info, config)
+        )
 
         # make sure the communication device gets updated once in a while
-        async_track_time_interval(hass, gen_fetch_data(blnet), timedelta(seconds=scan_interval))
+        async_track_time_interval(
+            hass, gen_fetch_data(blnet), timedelta(seconds=scan_interval)
+        )
 
-    # Fetch method takes care of adding dicovered sensors
+    # Fetch method takes care of adding discovered sensors
     return True

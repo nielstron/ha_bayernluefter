@@ -1,11 +1,9 @@
 """
-Connect to a Bayernluefter via it's web interface and read and write data
-Switch to control the power state
+Support for Bayernluefter fan.
 """
+
 import logging
 from typing import Optional
-
-from pyernluefter import Bayernluefter
 
 from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
 from homeassistant.util.percentage import (
@@ -14,8 +12,9 @@ from homeassistant.util.percentage import (
     percentage_to_ranged_value,
 )
 
+from pyernluefter import Bayernluefter
+
 _LOGGER = logging.getLogger(__name__)
-DEFAULT_NAME = "Bayernluefter"
 
 BAYERNLUEFTER_SPEED_RANGE = (1, 10)
 
@@ -25,7 +24,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     if discovery_info is None:
         _LOGGER.warning(
-            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."
+            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."  # noqa: E501
         )
         return False
     domain = discovery_info["domain"]
@@ -56,7 +55,8 @@ class BayernluefterFan(FanEntity):
         try:
             return self._bayernluefter.raw_converted()["Speed_Out"]
         except KeyError:
-            # TODO currently returns 0 (=off) when not initialized, should (?) be UNKNOWN
+            # TODO currently returns 0 (=off) when not initialized,
+            # should (?) be UNKNOWN
             return 0
 
     @property
