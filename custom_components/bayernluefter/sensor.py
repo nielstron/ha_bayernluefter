@@ -1,4 +1,7 @@
-"""Sensor platform for Local Diskspace"""
+"""
+Support for Bayernluefter sensors.
+"""
+
 import logging
 
 from homeassistant.const import (
@@ -38,7 +41,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     if discovery_info is None:
         _LOGGER.warning(
-            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."
+            "Bayernluefter Sensor explicitly configured, should be discovered. Look at documentation for correct setup instructions."  # noqa: E501
         )
         return False
     domain = discovery_info["domain"]
@@ -112,7 +115,6 @@ class BayernluefterSensor(Entity):
         return self._attributes
 
     def update(self):
-
         self._attributes = self._bayernluefter.raw()
         try:
             self._state = self._bayernluefter.raw_converted()["SystemMode"].value
