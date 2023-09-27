@@ -3,7 +3,7 @@
   "name": "Bayernluefter",
   "config_flow": false,
   "documentation": "https://github.com/nielstron/ha_bayernluefter",
-  "requirements": ["pyernluefter==0.1.1"],
+  "requirements": ["pyernluefter==0.2.0"],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
