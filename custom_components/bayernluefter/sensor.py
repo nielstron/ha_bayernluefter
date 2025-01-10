@@ -5,7 +5,7 @@ Support for Bayernluefter sensors.
 import logging
 
 from homeassistant.const import (
-    TEMP_CELSIUS,
+    UnitOfTemperature,
     CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
     STATE_UNKNOWN,
 )
@@ -53,7 +53,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             BayernluefterSpecialSensor(
                 name=f"{name} {mt}",
                 measure_type=mt,
-                unit_of_measurement=TEMP_CELSIUS,
+                unit_of_measurement=UnitOfTemperature.CELSIUS,
                 bayernluefter=bayernluefter,
             )
             for mt in TEMP_MEASURES

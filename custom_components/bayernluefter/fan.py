@@ -5,7 +5,7 @@ Support for Bayernluefter fan.
 import logging
 from typing import Optional
 
-from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
+from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.util.percentage import (
     ranged_value_to_percentage,
     int_states_in_range,
@@ -89,4 +89,4 @@ class BayernluefterFan(FanEntity):
 
     @property
     def supported_features(self) -> int:
-        return SUPPORT_SET_SPEED
+        return FanEntityFeature.SET_SPEED
